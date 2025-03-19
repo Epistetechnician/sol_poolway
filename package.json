@@ -4,14 +4,13 @@
   "description": "Solana Orca pools analyzer and dashboard",
   "main": "dist/index.js",
   "scripts": {
-    "build": "ts-node src/monitor.ts",
+    "build": "tsc",
     "start": "node dist/monitor.js",
     "dev": "ts-node src/monitor.ts",
     "test": "ts-node src/tests/orca.test.ts",
     "test:ticks": "ts-node src/scripts/test_tick_fetching.ts",
     "lint": "eslint . --ext .ts",
     "format": "prettier --write \"src/**/*.ts\"",
-    "monitor": "ts-node src/monitor.ts",
     "watch": "ts-node-dev --respawn src/monitor.ts",
     "postinstall": "npm run build"
   },
