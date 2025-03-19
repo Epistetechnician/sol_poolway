@@ -4,7 +4,7 @@
   "description": "Solana Orca pools analyzer and dashboard",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "ts-node src/monitor.ts",
     "start": "node dist/monitor.js",
     "dev": "ts-node src/monitor.ts",
     "test": "ts-node src/tests/orca.test.ts",
