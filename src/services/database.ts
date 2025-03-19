@@ -1,4 +1,4 @@
-import pgPromise, { IDatabase, IMain, ColumnSet, ITask } from 'pg-promise';
+import pgPromise, { IDatabase, IMain, ColumnSet, ITask, IBaseProtocol, IQueryFileOptions } from 'pg-promise';
 import { DB_CONFIG, TABLE_NAMES, QUERIES } from '../config/constants';
 import { IPoolData, ITickData } from './orca';
 import { logger } from '../utils/logger';
@@ -8,6 +8,16 @@ interface IExtensions {
 }
 
 type DatabaseConnection = IDatabase<IExtensions>;
+
+interface IPgError extends Error {
+  code?: string;
+}
+
+interface IPgEvent {
+  query: string;
+  params: any;
+  ctx: any;
+}
 
 class DatabaseService {
   private static instance: DatabaseService;
@@ -21,7 +31,7 @@ class DatabaseService {
   private constructor() {
     this.pgp = pgPromise({
       // Event handlers for connection management
-      error: (err, e) => {
+      error: (err: IPgError, e: IPgEvent) => {
         logger.error(`Database error: ${err.message || err}`, {
           query: e.query,
           params: e.params,
@@ -94,10 +104,6 @@ class DatabaseService {
     return DatabaseService.instance;
   }
 
-  /**
-   * Check if database is connected
-   * @returns Connection status
-   */
   public isHealthy(): boolean {
     return this.isConnected;
   }
@@ -215,7 +221,7 @@ class DatabaseService {
 
       const query = this.pgp.helpers.insert(values, cs) +
         ' ON CONFLICT (timestamp, pool_address, tick_index) DO UPDATE SET ' +
-        cs.columns.map(col => `${col.name} = EXCLUDED.${col.name}`).join(', ');
+        cs.columns.map((col: { name: string }) => `${col.name} = EXCLUDED.${col.name}`).join(', ');
 
       await this.db.none(query);
     } catch (error: any) {
@@ -226,7 +232,7 @@ class DatabaseService {
 
   public async getLatestPrices(): Promise<Array<{ pool_address: string; price: number; timestamp: Date }>> {
     try {
-      return this.db.any(`
+      return this.db.any<{ pool_address: string; price: number; timestamp: Date }>(`
         WITH latest_timestamps AS (
           SELECT pool_address, MAX(timestamp) as max_timestamp
           FROM ${TABLE_NAMES.PRICE_DATA}
@@ -266,7 +272,7 @@ class DatabaseService {
     }
 
     try {
-      return this.db.any<IPoolRow>(`
+      const rows = await this.db.any<IPoolRow>(`
         SELECT pd.*, p.price, p.liquidity_usd, p.volume_24h
         FROM ${TABLE_NAMES.POOL_DATA} pd
         LEFT JOIN ${TABLE_NAMES.PRICE_DATA} p
@@ -275,8 +281,9 @@ class DatabaseService {
         WHERE pd.pool_address = $1
           AND pd.timestamp BETWEEN $2 AND $3
         ORDER BY pd.timestamp ASC;
-      `, [poolAddress, startTime, endTime])
-      .then(rows => rows.map(row => ({
+      `, [poolAddress, startTime, endTime]);
+
+      return rows.map((row: IPoolRow) => ({
         timestamp: row.timestamp,
         poolAddress: row.pool_address,
         tokenAAmount: parseFloat(row.token_a_amount),
@@ -289,7 +296,7 @@ class DatabaseService {
         price: parseFloat(row.price),
         liquidityUsd: parseFloat(row.liquidity_usd),
         volume24h: row.volume_24h ? parseFloat(row.volume_24h) : undefined,
-      })));
+      }));
     } catch (error: any) {
       logger.error(`Error getting pool history: ${error.message}`);
       return [];
@@ -307,4 +314,4 @@ class DatabaseService {
 }
 
 // Export singleton instance
-export const dbService = DatabaseService.getInstance(); 
+export const dbService = DatabaseService.getInstance();
