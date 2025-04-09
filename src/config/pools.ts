@@ -33,7 +33,7 @@ const TOKENS = {
   },
   JLP: {
     address: new PublicKey('27G8MtK7VtTcCHkpASjSDdkWWYfoqT6ggEuKidVJidD4'),
-    decimals: 9,
+    decimals: 6,
     symbol: 'JLP'
   },
   FARTCOIN: {
@@ -50,7 +50,23 @@ const TOKENS = {
     address: new PublicKey('HeLp6NuQkmYB4pYWo2zYs22mESHXPQYzXbB8n4V98jwC'),
     decimals: 9,
     symbol: 'AI16Z'
+  },
+  JUP: {
+    address: new PublicKey('JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN'),
+    decimals: 6,
+    symbol: 'JUP'
+  },
+  JTOL: {
+    address: new PublicKey('jtojtomepa8beP8AuQc6eXt5FriJwfFMwQx2v2f9mCL'),
+    decimals: 6,
+    symbol: 'JTO'
+  },
+  SPX: {
+    address: new PublicKey('J3NKxxXZcnNiMjKw9hYb2K4LUxgwB6t1FtPtQVsv3KFr'),
+    decimals: 6,
+    symbol: 'SPX'
   }
+
 };
 
 // Standard tick spacing for Orca whirlpools
@@ -84,7 +100,7 @@ export const POOLS: { [key: string]: IPoolConfig } = {
   },
   JLP_SOL: {
     name: 'JLP/SOL',
-    address: new PublicKey('27G8MtK7VtTcCHkpASjSDdkWWYfoqT6ggEuKidVJidD4'),
+    address: new PublicKey('6a3m2EgFFKfsFuQtP4LJJXPcAe3TQYXNyHUjjZpUxYgd'),
     tokenA: TOKENS.JLP,
     tokenB: TOKENS.SOL,
     tickSpacing: TICK_SPACING.VOLATILE
@@ -92,6 +108,13 @@ export const POOLS: { [key: string]: IPoolConfig } = {
   FARTCOIN_SOL: {
     name: 'Fartcoin/SOL',
     address: new PublicKey('C9U2Ksk6KKWvLEeo5yUQ7Xu46X7NzeBJtd9PBfuXaUSM'),
+    tokenA: TOKENS.FARTCOIN,
+    tokenB: TOKENS.SOL,
+    tickSpacing: TICK_SPACING.VOLATILE
+  },
+  FARTCOIN_USDC: {
+    name: 'Fartcoin/SOL',
+    address: new PublicKey('HMZozbw3hH12xNdXahjYPcYLrifeaFQYHgVriSLmJs1Z'),
     tokenA: TOKENS.FARTCOIN,
     tokenB: TOKENS.SOL,
     tickSpacing: TICK_SPACING.VOLATILE
@@ -116,9 +139,36 @@ export const POOLS: { [key: string]: IPoolConfig } = {
     tokenA: TOKENS.AI16Z,
     tokenB: TOKENS.SOL,
     tickSpacing: TICK_SPACING.VOLATILE
+  },
+  JUP_SOL: {
+    name: 'JUP/SOL',
+    address: new PublicKey('C1MgLojNLWBKADvu9BHdtgzz1oZX4dZ5zGdGcgvvW8Wz'),
+    tokenA: TOKENS.JUP,
+    tokenB: TOKENS.SOL,
+    tickSpacing: TICK_SPACING.VOLATILE
+  },
+  JTO_JitoSOL: {
+    name: 'JTO/JitoSOL',
+    address: new PublicKey('G2FiE1yn9N9ZJx5e1E2LxxMnHvb1H3hCuHLPfKJ98smA'),
+    tokenA: TOKENS.JTOL,
+    tokenB: TOKENS.SOL,
+    tickSpacing: TICK_SPACING.VOLATILE
+  },
+  SPX_SOL: {
+    name: 'SPX/SOL',
+    address: new PublicKey('9YyNqgM3Wcjnzb4DXiyNBbcLEkGAyaiB4PSeQyZsFtr8'),
+    tokenA: TOKENS.SPX,
+    tokenB: TOKENS.SOL,
+    tickSpacing: TICK_SPACING.VOLATILE
+  },
+  SPX_USDC: {
+    name: 'SPX/USDC',
+    address: new PublicKey('AgeSxtVWWMojFWYNrXKnVp9cFuC5CQ7M4rzmrseLxfUj'),
+    tokenA: TOKENS.SPX,
+    tokenB: TOKENS.USDC,
+    tickSpacing: TICK_SPACING.VOLATILE
   }
 };
-
 // Export pool addresses array for easy iteration
 export const POOL_ADDRESSES = Object.values(POOLS).map(pool => pool.address);
 
