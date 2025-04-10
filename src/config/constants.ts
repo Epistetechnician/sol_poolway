@@ -7,12 +7,14 @@ dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 // RPC Configuration
 export const RPC_CONFIG = {
   MAINNET_URL: process.env.SOLANA_RPC_URL || 'https://api.mainnet-beta.solana.com',
-  MAX_RETRIES: 3,
-  RETRY_DELAY: 1000, // 1 second
-  RATE_LIMIT_DELAY: 100, // 100ms
-  TIMEOUT: 30000, // ms
-  BATCH_SIZE: 100,
-  RATE_LIMIT: parseInt(process.env.RPC_RATE_LIMIT || '10', 10)
+  MAX_RETRIES: 5,
+  RETRY_DELAY: 2000, // 2 seconds
+  RATE_LIMIT_DELAY: 500, // 500ms
+  TIMEOUT: 60000, // 60 seconds
+  BATCH_SIZE: 50,
+  RATE_LIMIT: parseInt(process.env.RPC_RATE_LIMIT || '10', 10),
+  EXPONENTIAL_BACKOFF: true, // Enable exponential backoff
+  MAX_BACKOFF: 30000, // Maximum backoff time of 30 seconds
 };
 
 // Database Configuration
